@@ -10,31 +10,25 @@ jobs:
   client:
     name: Client SDK (typecheck + tests)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/client
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm install
-      - run: npx tsc --noEmit
-      - run: npx vitest run
+      - run: npx tsc --noEmit -p packages/client/tsconfig.json
+      - run: npx vitest run --config packages/client/vitest.config.ts
 
   app:
     name: App (tests)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: npm install
-      - run: npx vitest run
+      - run: npx vitest run --config app/vitest.config.ts
 
   contract:
     name: Contract (cargo test)
