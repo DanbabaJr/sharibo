@@ -215,4 +215,4 @@ function installIndicator(): void {
 }
 
 installIndicator();
-prefetchMembershipArtifacts();
+if (typeof window !== "undefined") prefetchMembershipArtifacts();

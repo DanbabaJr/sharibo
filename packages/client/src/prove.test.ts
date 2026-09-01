@@ -1,4 +1,4 @@
-import { test } from "node:test";
+// vitest global test (see vitest.config.ts globals: true)
 import assert from "node:assert/strict";
 import { validateCircuitInput, type CircuitInput } from "./prove.js";
 import { FR_MODULUS } from "./identity.js";

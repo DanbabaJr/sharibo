@@ -6,6 +6,19 @@ import { ContractError, RpcError } from "./errors.js";
 // Public signal order and claim argument order are specified in
 // docs/wire-format.md §1 — that document is the single source of truth.
 
+/** Retry wrapper for transient Soroban RPC failures (429/503/timeout). */
+async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt >= retries) throw err;
+      const delay = 500 * 2 ** attempt + Math.random() * 200;
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+}
+
 /**
  * Network configuration for connecting to the Sharibo contract.
  *
@@ -137,7 +150,7 @@ export async function createCircle(
     vk: ContractVerificationKey;
   },
 ): Promise<TxResult<bigint>> {
-  const tx = await withRetry(() => client.create_circle({
+  const tx: any = await withRetry(() => client.create_circle({
     admin: args.admin,
     token: args.token,
     root: args.root,
@@ -162,7 +175,7 @@ export async function fund(
   client: ShariboClient,
   args: { circleId: bigint; from: string },
 ): Promise<TxResult<void>> {
-  const tx = await withRetry(() => client.fund({ circle_id: args.circleId, from: args.from }));
+  const tx: any = await withRetry(() => client.fund({ circle_id: args.circleId, from: args.from }));
   const sent = await tx.signAndSend();
   return populateTxResult(undefined, sent);
 }
@@ -189,7 +202,7 @@ export async function claim(
     proof: ContractProof;
   },
 ): Promise<TxResult<void>> {
-  const tx = await withRetry(() => client.claim({
+  const tx: any = await withRetry(() => client.claim({
     circle_id: args.circleId,
     recipient: args.recipient,
     nullifier_hash: args.nullifierHash,
@@ -231,7 +244,7 @@ export interface CircleView {
 export async function getCircle(client: ShariboClient, circleId: bigint): Promise<CircleView> {
   // get_circle is a pure read: the SDK detects no signature is needed and
   // refuses signAndSend() without `force` (there's nothing to sign/submit).
-  const tx = await withRetry(() => client.get_circle({ circle_id: circleId }));
+  const tx: any = await withRetry(() => client.get_circle({ circle_id: circleId }));
   const sent = await tx.signAndSend({ force: true });
   return sent.result;
 }
@@ -249,7 +262,7 @@ export async function hasClaimed(
   circleId: bigint,
   nullifierHash: bigint,
 ): Promise<boolean> {
-  const tx = await withRetry(() => client.has_claimed({
+  const tx: any = await withRetry(() => client.has_claimed({
     circle_id: circleId,
     nullifier_hash: nullifierHash,
   }));

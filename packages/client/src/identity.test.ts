@@ -1,6 +1,7 @@
-import { test } from "node:test";
+// vitest global test (see vitest.config.ts globals: true)
 import assert from "node:assert/strict";
-import { FR_MODULUS, randomFieldElement, computeExternalNullifier } from "./identity.js";
+import { FR_MODULUS, randomFieldElement, computeExternalNullifier, generateIdentity, poseidon, computeNullifierHash } from "./identity.js";
+import { InvalidInputError } from "./errors.js";
 
 // Issue #63: pin FR_MODULUS against independent sources so a transcription
 // error in the hex literal fails the suite instead of silently corrupting
