@@ -15,7 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
+      - run: npm cache clean --force
+      - run: npm install --legacy-peer-deps
       - run: npx tsc --noEmit -p packages/client/tsconfig.json
       - run: npx vitest run --config packages/client/vitest.config.ts
 
@@ -27,7 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
+      - run: npm cache clean --force
+      - run: npm install --legacy-peer-deps
       - run: npx vitest run --config app/vitest.config.ts
 
   contract:
