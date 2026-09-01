@@ -1,4 +1,4 @@
-import { test } from "node:test";
+// vitest global test (see vitest.config.ts globals: true)
 import assert from "node:assert/strict";
 import { FR_MODULUS, randomFieldElement, computeExternalNullifier, generateIdentity, poseidon, computeNullifierHash } from "./identity.js";
 import { InvalidInputError } from "./errors.js";

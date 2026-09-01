@@ -1,4 +1,4 @@
-import { test } from "node:test";
+// vitest global test (see vitest.config.ts globals: true)
 import assert from "node:assert/strict";
 import { MerkleTree, ZERO_VALUE } from "./tree.js";
 import { generateIdentity } from "./identity.js";
