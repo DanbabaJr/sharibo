@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MerkleTree } from "./tree.js";
+import { MerkleTree, ZERO_VALUE } from "./tree.js";
 import { generateIdentity } from "./identity.js";
 
 const LEVELS = 4;
@@ -93,7 +93,6 @@ test("proof throws for a leaf not in a tree that has zero occupied slots (empty)
     },
   );
 });
-import { MerkleTree, ZERO_VALUE } from "./tree.js";
 import { FR_MODULUS } from "./identity.js";
 
 // ---- levels validation ----

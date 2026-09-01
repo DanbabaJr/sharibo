@@ -45,7 +45,7 @@ const DEFAULT_TREE_LEVELS = 4;
  * Throws InvalidInputError on malformed input.
  */
 export function validateCircuitInput(
-  input: Record<string, unknown>,
+  input: CircuitInput,
   levels: number = DEFAULT_TREE_LEVELS,
 ): void {
   const pathElements = input.pathElements as bigint[] | undefined;
@@ -102,13 +102,13 @@ function getArtifacts(): Promise<ProverArtifacts> {
  * network time is not reported as proving/compute time.
  */
 export async function fullProve(
-  input: Record<string, unknown>,
+  input: CircuitInput,
 ): Promise<ProofResult> {
   const artifacts = await getArtifacts();
 
   const provingStartedAt = performance.now();
   const result = await groth16.fullProve(
-    input,
+    input as any,
     artifacts.wasm,
     artifacts.zkey,
   );
@@ -123,7 +123,7 @@ export async function fullProve(
 }
 
 export async function prove(
-  input: Record<string, unknown>,
+  input: CircuitInput,
 ): Promise<ProofResult> {
   return fullProve(input);
 }
