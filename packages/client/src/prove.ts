@@ -12,7 +12,7 @@ import { InvalidInputError } from "./errors.js";
 import { FR_MODULUS } from "./identity.js";
 
 /** Circuit public-signal input shape. */
-export interface CircuitInput {
+export interface CircuitInput extends Record<string, unknown> {
   identityNullifier: bigint;
   identitySecret: bigint;
   pathElements: bigint[];
