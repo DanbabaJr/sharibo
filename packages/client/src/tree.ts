@@ -131,28 +131,46 @@ export class MerkleTree {
   }
 
   /**
-   * Generates a Merkle proof for a leaf at the given index.
-   *
-   * @param leafIndex - The index of the leaf in the tree.
-   * @returns A MerkleProof containing the root, path elements, and path indices.
-   * @throws {Error} If the leaf index is out of range.
+   * Generates a Merkle proof for a leaf by its value.
+   * Convenience overload that finds the leaf index automatically.
    */
-  proof(leafIndex: number): MerkleProof {
-    if (leafIndex < 0 || leafIndex >= this.layers[0].length) {
+  proof(leaf: bigint): MerkleProof;
+  /**
+   * Generates a Merkle proof for a leaf at the given index.
+   */
+  proof(leafIndex: number): MerkleProof;
+  proof(leafOrIndex: bigint | number): MerkleProof {
+    let index: number;
+
+    if (typeof leafOrIndex === "bigint") {
+      index = this.indexOf(leafOrIndex);
+      if (index === -1) {
+        const hex = "0x" + leafOrIndex.toString(16).slice(0, 16);
+        const occupied = this.leaves.length;
+        const total = this.layers[0].length;
+        throw new Error(
+          `leaf ${hex}... not found in this tree (${occupied} occupied, ${total} slots)`,
+        );
+      }
+    } else {
+      index = leafOrIndex;
+    }
+
+    if (index < 0 || index >= this.layers[0].length) {
       throw new InvalidInputError("leaf index out of range");
     }
 
     const pathElements: bigint[] = [];
     const pathIndices: number[] = [];
-    let index = leafIndex;
+    let currentIndex = index;
 
     for (let level = 0; level < this.levels; level++) {
       const layer = this.layers[level];
-      const isRightNode = index % 2 === 1;
-      const siblingIndex = isRightNode ? index - 1 : index + 1;
+      const isRightNode = currentIndex % 2 === 1;
+      const siblingIndex = isRightNode ? currentIndex - 1 : currentIndex + 1;
       pathElements.push(layer[siblingIndex]);
       pathIndices.push(isRightNode ? 1 : 0);
-      index = Math.floor(index / 2);
+      currentIndex = Math.floor(currentIndex / 2);
     }
 
     return { root: this.root, pathElements, pathIndices };
