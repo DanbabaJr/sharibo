@@ -18,7 +18,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx tsc --noEmit -p packages/client/tsconfig.json
-      - run: npx vitest run --config packages/client/vitest.config.ts
+      - run: npx vitest run --config packages/client/vitest.config.ts --dir packages/client/src
 
   app:
     name: App (tests)
@@ -30,7 +30,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npx vitest run --config app/vitest.config.ts
+      - run: npx vitest run --config app/vitest.config.ts --dir app/src
 
   contract:
     name: Contract (cargo test)

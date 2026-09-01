@@ -1,4 +1,11 @@
 import { poseidon, FR_MODULUS } from "./identity.js";
+import { InvalidInputError } from "./errors.js";
+
+/** Default Merkle tree depth — single-sourced from circuits/config.json. */
+export const TREE_LEVELS = 4;
+
+/** Maximum circle size (members). */
+export const MAX_CIRCLE_SIZE = 16;
 
 /**
  * Fixed placeholder for unused leaves when padding the tree out to full capacity (2**levels).

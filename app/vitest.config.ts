@@ -14,7 +14,7 @@ export default defineConfig({
     environment: "jsdom",
     // Import @testing-library/jest-dom matchers (toBeInTheDocument, etc.)
     // globally before every test file.
-    setupFiles: ["./src/setupTests.ts"],
+    setupFiles: ["./app/src/setupTests.ts"],
     globals: true,
   },
 });

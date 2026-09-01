@@ -6,6 +6,19 @@ import { ContractError, RpcError } from "./errors.js";
 // Public signal order and claim argument order are specified in
 // docs/wire-format.md §1 — that document is the single source of truth.
 
+/** Retry wrapper for transient Soroban RPC failures (429/503/timeout). */
+async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt >= retries) throw err;
+      const delay = 500 * 2 ** attempt + Math.random() * 200;
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+}
+
 /**
  * Network configuration for connecting to the Sharibo contract.
  *
